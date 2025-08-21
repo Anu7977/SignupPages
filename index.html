@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Track Sign up</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to right,
+          #FF6B6B 0%,
+          #FF6B6B 35%,
+          #FF8A8A 40%,
+          #4ECDC4 45%,
+          #4ECDC4 70%,
+          #3ABABA 75%,
+          #1A535C 80%,
+          #1A535C 100%);
+    }
+
+    .container {
+      background-color: rgba(128, 0, 128, 0.4);
+      padding: 40px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #4B0082;
+      width: 360px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 1.6em;
+      color: blue;
+    }
+
+    input::placeholder {
+      color: yellow;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 95%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 2px solid black;
+      border-radius: 6px;
+      background-color: rgba(128, 0, 128, 0.4);
+      color: white;
+      font-size: 1em;
+      transition: background 0.3s ease;
+      display: block;
+    }
+
+    .password-wrapper {
+      position: relative;
+      width: 95%;
+      margin: 10px 0;
+    }
+
+    .password-wrapper input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid black;
+      border-radius: 6px;
+      background-color: rgba(128, 0, 128, 0.4);
+      color: white;
+      font-size: 1em;
+      transition: background 0.3s ease;
+      display: block;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2em;
+      color: yellow;
+      user-select: none;
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: #00c6ff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: block;
+    }
+
+    .btn:hover {
+      background: #0072ff;
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .links a {
+      color: #aadfff;
+      text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+      display: inline-block;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    .links a:hover {
+      color: white;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 0.85em;
+      height: 1em;
+      margin-top: 4px;
+      display: block;
+      min-height: 18px;
+    }
+
+    #signup-form {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+
+    <div id="login-form">
+      <div class="header">
+        <h2>Login</h2>
+      </div>
+
+      <input type="text" id="login-username" placeholder="Enter Username" />
+      <span id="loginUsernameError" class="error-message"></span>
+
+      <div class="password-wrapper">
+        <input type="password" id="login-password" placeholder="Enter Password" />
+        <span class="toggle-password" onclick="togglePassword('login-password', this)">👁️</span>
+      </div>
+      <span id="loginPasswordError" class="error-message"></span>
+
+      <button class="btn" onclick="login()">Login</button>
+
+      <div class="links">
+        <a onclick="showSignup()">🤵 Create new account</a><br />
+        <a href="#" onclick="forgotPassword()">Forgot password? 🤔</a><br />
+      </div>
+    </div>
+
+
+    <div id="signup-form">
+      <div class="header">
+        <h2>Sign Up</h2>
+      </div>
+
+      <input type="text" id="signup-username" placeholder="Choose Username" />
+      <span id="signupUsernameError" class="error-message"></span>
+
+      <input type="email" id="signup-email" placeholder="Enter Email" />
+      <span id="signupEmailError" class="error-message"></span>
+
+      <div class="password-wrapper">
+        <input type="password" id="signup-password" placeholder="Create Password" />
+        <span class="toggle-password" onclick="togglePassword('signup-password', this)">👁️</span>
+      </div>
+      <span id="signupPasswordError" class="error-message"></span>
+
+      <button class="btn" onclick="signup()">Sign Up</button>
+
+      <div class="links">
+        <a onclick="showLogin()">⬅ Back to Login</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function togglePassword(inputId, toggleElem) {
+      const passwordInput = document.getElementById(inputId);
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      toggleElem.textContent = isPassword ? "🙈" : "👁️";
+    }
+
+    function showSignup() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'block';
+      clearLoginErrors();
+      clearSignupErrors();
+      clearFormInputs();
+    }
+
+    function showLogin() {
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+      clearLoginErrors();
+      clearSignupErrors();
+      clearFormInputs();
+    }
+
+    function clearLoginErrors() {
+      document.getElementById("loginUsernameError").textContent = "";
+      document.getElementById("loginPasswordError").textContent = "";
+    }
+
+    function clearSignupErrors() {
+      document.getElementById("signupUsernameError").textContent = "";
+      document.getElementById("signupEmailError").textContent = "";
+      document.getElementById("signupPasswordError").textContent = "";
+    }
+
+    function clearFormInputs() {
+      ['login-username', 'login-password', 'signup-username', 'signup-email', 'signup-password']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+
+    function login() {
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+      clearLoginErrors();
+
+      let valid = true;
+
+      if (!username) {
+        document.getElementById("loginUsernameError").textContent = "Username cannot be empty";
+        valid = false;
+      }
+      if (!password) {
+        document.getElementById("loginPasswordError").textContent = "Password cannot be empty";
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      alert(`Welcome ${username}, you are now logged in!`);
+
+    }
+
+    function signup() {
+      const username = document.getElementById("signup-username").value.trim();
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
+      clearSignupErrors();
+
+      let valid = true;
+
+      if (!username) {
+        document.getElementById("signupUsernameError").textContent = "Username cannot be empty";
+        valid = false;
+      }
+      if (!email) {
+        document.getElementById("signupEmailError").textContent = "Email cannot be empty";
+        valid = false;
+      } else if (!validateEmail(email)) {
+        document.getElementById("signupEmailError").textContent = "Invalid email format";
+        valid = false;
+      }
+      if (!password) {
+        document.getElementById("signupPasswordError").textContent = "Password cannot be empty";
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      alert(`Account created for ${username}!`);
+      showLogin();
+
+    }
+
+    function validateEmail(email) {
+
+      const re = /\S+@\S+\.\S+/;
+      return re.test(email);
+    }
+
+    function forgotPassword() {
+      alert("Redirecting to password recovery page...");
+    }
+
+    function createAccount() {
+      showSignup();
+    }
+  </script>
+</body>
+
+</html>
